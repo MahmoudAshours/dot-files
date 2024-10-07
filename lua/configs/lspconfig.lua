@@ -44,6 +44,11 @@ lspconfig["yamlls"].setup {
   on_attach = on_attach,
   capabilities = capabilities,
 }
+lspconfig["gopls"].setup {
+  on_attach = on_attach,
+  on_init = on_init,
+  capabilities = capabilities,
+}
 lspconfig["clangd"].setup {
   on_attach = on_attach,
   capabilities = capabilities,

@@ -24,6 +24,7 @@ local opts = {
 
     -- go
     null_ls.builtins.formatting.gofmt,
+    null_ls.builtins.formatting.goimports,
     null_ls.builtins.formatting.goimports_reviser,
 
     -- typescript
@@ -39,13 +40,16 @@ local opts = {
     if client.supports_method "textDocument/formatting" then
       vim.api.nvim_clear_autocmds { group = augroup, buffer = bufnr }
       vim.api.nvim_create_autocmd("BufWritePre", {
+        pattern = "*.go",
         group = augroup,
         buffer = bufnr,
         callback = function()
-          -- on 0.8, you should use vim.lsp.buf.format({ bufnr = bufnr }) instead
-          -- on later neovim version, you should use vim.lsp.buf.format({ async = false }) instead
-          vim.lsp.buf.format { async = false }
+          vim.lsp.buf.format { async = true }
+          print "Formatting Go file..."
         end,
+        sources = {
+          null_ls.builtins.formatting.goimports,
+        },
       })
     end
   end,
