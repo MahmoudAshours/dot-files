@@ -1,55 +1,67 @@
--- EXAMPLE 
-local on_attach = require("nvchad.configs.lspconfig").on_attach
-local on_init = require("nvchad.configs.lspconfig").on_init
-local capabilities = require("nvchad.configs.lspconfig").capabilities
+local nvchad_lsp = require "nvchad.configs.lspconfig"
 
-local lspconfig = require "lspconfig"
-local servers = { "html", "cssls" }
+nvchad_lsp.defaults()
 
--- lsps with default config
-for _, lsp in ipairs(servers) do
-  lspconfig[lsp].setup {
-    on_attach = on_attach,
-    on_init = on_init,
-    capabilities = capabilities,
-  }
-end
-
--- typescript
-lspconfig.tsserver.setup {
-  on_attach = on_attach,
-  on_init = on_init,
-  capabilities = capabilities,
-}
-
-lspconfig.jdtls.setup {
-  on_attach = on_attach,
-  on_init = on_init,
-  capabilities = capabilities,
-}
-
-lspconfig["dartls"].setup {
-  on_attach = on_attach,
+-- Go
+vim.lsp.config("gopls", {
   settings = {
-    dart = {
-      analysisExcludedFolders = {
-        vim.fn.expand("$HOME/.pub-cache/"),
-        vim.fn.expand("/opt/homebrew/"),
-        vim.fn.expand("$HOME/Dev/flutter/"),
-      }
-    }
-  }
-}
-lspconfig["yamlls"].setup {
-  on_attach = on_attach,
-  capabilities = capabilities,
-}
-lspconfig["gopls"].setup {
-  on_attach = on_attach,
-  on_init = on_init,
-  capabilities = capabilities,
-}
-lspconfig["clangd"].setup {
-  on_attach = on_attach,
-  capabilities = capabilities,
+    gopls = {
+      gofumpt = true,
+      completeUnimported = true,
+      usePlaceholders = true,
+      staticcheck = true,
+
+      analyses = {
+        nilness = true,
+        unusedparams = true,
+        unusedwrite = true,
+        shadow = true,
+        useany = true,
+      },
+
+      hints = {
+        assignVariableTypes = false,
+        compositeLiteralFields = true,
+        compositeLiteralTypes = true,
+        constantValues = true,
+        functionTypeParameters = true,
+        parameterNames = true,
+        rangeVariableTypes = true,
+      },
+    },
+  },
+})
+
+-- Python
+vim.lsp.config("pyright", {
+  settings = {
+    python = {
+      analysis = {
+        typeCheckingMode = "strict",
+        autoSearchPaths = true,
+        useLibraryCodeForTypes = true,
+      },
+    },
+  },
+})
+
+vim.lsp.enable {
+  -- primary
+  "gopls",
+  "jdtls",
+
+  -- infra
+  "bashls",
+  "dockerls",
+  "yamlls",
+  "jsonls",
+  "terraformls",
+
+  -- occasional work
+  "pyright",
+  "ts_ls",
+  "html",
+  "cssls",
+  "clangd",
+  "intelephense",
 }
